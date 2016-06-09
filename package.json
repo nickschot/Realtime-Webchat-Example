@@ -4,6 +4,8 @@
   "description": "Real-time chatapp for the BPSD course",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js | bunyan -o short",
+    "dev": "nf run nodemon index.js | bunyan -o short",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
