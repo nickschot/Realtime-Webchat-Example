@@ -29,6 +29,7 @@
   },
   "devDependencies": {
     "foreman": "^1.4.1",
+    "jshint": "^2.9.2",
     "nodemon": "^1.9.2"
   }
 }
