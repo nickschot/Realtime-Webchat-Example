@@ -1,7 +1,10 @@
 'use strict';
 
 const app = require('express')();
+const express = require('express');
+const session = require('express-session');
 const http = require('http').Server(app);
+const authentication = require('./server/authentication');
 
 const bunyan            = require('bunyan');
 const expressBunyan     = require('express-bunyan-logger');
@@ -30,10 +33,23 @@ const log = bunyan.createLogger(bunyanConfig);
 app.use(expressBunyan(expressBunyanConfig));
 app.use(expressBunyan.errorLogger(expressBunyanConfig));
 
-// DUMMY ENDPOINT
+app.use(session({
+    secret: 'chatsomeIsAwesome!',
+    resave: false,
+    saveUninitialized: false
+}));
+
+app.get('/pages/authenticated/*', authentication.requireAuthentication);
+
+// ENDPOINTS
 app.get('/', function(req, res){
     res.send('<h1>Hello world</h1>');
 });
+
+app.use('/pages', express.static('pages'));
+app.use('/public', express.static('public'));
+
+
 
 //Start the HTTP server on port 3000
 http.listen(3000, function(){
