@@ -1,0 +1,19 @@
+{
+  "name": "chatsome",
+  "version": "1.0.0",
+  "description": "Real-time chatapp for the BPSD course",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nickschot/bpsd.git"
+  },
+  "author": "Sebastiaan la Fleur, Nick Schot",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nickschot/bpsd/issues"
+  },
+  "homepage": "https://github.com/nickschot/bpsd#readme"
+}
