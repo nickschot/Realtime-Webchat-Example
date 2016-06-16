@@ -12,7 +12,7 @@ $().ready(function(){
     $('#chatbox_form').on('submit', function(e){
         e.preventDefault();
 
-        var messageText = $('#chatbox_message').val();
+        var messageText = escapeHtml($('#chatbox_message').val());
 
         if(messageText){
             var message = {
@@ -47,4 +47,20 @@ $().ready(function(){
             $('#chatbox_messages').append('<li class="' + messageClass + '"><span>' + msg.username + '</span><p>' + msg.message + '</p></li>');
         }
     }
+
+    var entityMap = {
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': '&quot;',
+        "'": '&#39;',
+        "/": '&#x2F;'
+    };
+
+    function escapeHtml(string) {
+        return String(string).replace(/[&<>"'\/]/g, function (s) {
+            return entityMap[s];
+        });
+    }
+
 });
