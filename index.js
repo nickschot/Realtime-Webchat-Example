@@ -74,6 +74,6 @@ io.on('connection', function(socket){
 
 
 //Start the HTTP server on port 3000
-http.listen(3000, function(){
-    log.info('listening on *:3000');
+http.listen(process.env.PORT || 3000, function(){
+    log.info('listening on *:' + (process.env.PORT || 3000));
 });
