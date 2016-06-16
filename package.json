@@ -1,0 +1,36 @@
+{
+  "name": "chatsome",
+  "version": "1.0.0",
+  "description": "Real-time chatapp for the BPSD course",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js | bunyan -o short",
+    "dev": "nf run nodemon index.js | bunyan -o short",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nickschot/bpsd.git"
+  },
+  "author": "Sebastiaan la Fleur, Nick Schot",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nickschot/bpsd/issues"
+  },
+  "homepage": "https://github.com/nickschot/bpsd#readme",
+  "dependencies": {
+    "bunyan": "^1.8.1",
+    "express": "^4.13.4",
+    "express-bunyan-logger": "^1.3.0",
+    "express-session": "^1.13.0",
+    "handlebars": "^4.0.5",
+    "mongoose": "^4.4.20",
+    "require-dir": "^0.3.0",
+    "socket.io": "^1.4.6"
+  },
+  "devDependencies": {
+    "foreman": "^1.4.1",
+    "jshint": "^2.9.2",
+    "nodemon": "^1.9.2"
+  }
+}
