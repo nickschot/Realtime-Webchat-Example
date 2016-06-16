@@ -11,8 +11,6 @@ const io                = require('socket.io')(http);
 const bunyan            = require('bunyan');
 const expressBunyan     = require('express-bunyan-logger');
 
-const util              = requireDir('util');
-
 // LOGGING
 const bunyanConfig = {
     name: 'ChatSome'
@@ -71,7 +69,6 @@ io.on('connection', function(socket){
 
     socket.on('chatbox_message', function(msg){
         if(msg.message){
-            msg = util.functions.escapeMessageObj(msg);
             log.info('New message: ', msg);
             socket.broadcast.emit('chatbox_message', msg);
         }

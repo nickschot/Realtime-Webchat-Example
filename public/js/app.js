@@ -12,7 +12,7 @@ $().ready(function(){
     $('#chatbox_form').on('submit', function(e){
         e.preventDefault();
 
-        var messageText = escapeHtml($('#chatbox_message').val());
+        var messageText = $('#chatbox_message').val();
 
         if(messageText){
             var message = {
@@ -36,31 +36,21 @@ $().ready(function(){
 
     function appendMessage(type, msg){
         var messageClass = '';
+        var messageElem = '';
 
         if(type === 'system'){
             messageClass = 'system';
-            $('#chatbox_messages').append('<li class="' + messageClass + '"><i>' + msg.message + '</i></li>');
+            
+            messageElem = $('<li class="' + messageClass + '"><p><i></i></p></li>');
+            messageElem.find('i').text(msg.message);
         } else {
-            if(msg.username === username){
-                messageClass = 'user';
-            }
-            $('#chatbox_messages').append('<li class="' + messageClass + '"><span>' + msg.username + '</span><p>' + msg.message + '</p></li>');
+            messageClass = msg.username === username ? 'user' : '';
+
+            messageElem = $('<li class="' + messageClass + '"><span></span><p></p></li>');
+            messageElem.children('span').text(msg.username);
+            messageElem.children('p').text(msg.message);
         }
+
+        $('#chatbox_messages').append(messageElem);
     }
-
-    var entityMap = {
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': '&quot;',
-        "'": '&#39;',
-        "/": '&#x2F;'
-    };
-
-    function escapeHtml(string) {
-        return String(string).replace(/[&<>"'\/]/g, function (s) {
-            return entityMap[s];
-        });
-    }
-
 });
