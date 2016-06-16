@@ -40,7 +40,7 @@ $().ready(function(){
 
         if(type === 'system'){
             messageClass = 'system';
-            
+
             messageElem = $('<li class="' + messageClass + '"><p><i></i></p></li>');
             messageElem.find('i').text(msg.message);
         } else {
@@ -52,5 +52,18 @@ $().ready(function(){
         }
 
         $('#chatbox_messages').append(messageElem);
+        scrollDown();
+    }
+
+    function scrollDown(){
+        var height = $('html').outerHeight();
+        var windowHeight = $(window).height();
+
+        var scrollStart = $('html').scrollTop();
+        var scrollEnd = height > windowHeight ? height - windowHeight : scrollStart;
+        
+        $('body').animate({
+            scrollTop: scrollEnd+'px'
+        }, 300);
     }
 });
