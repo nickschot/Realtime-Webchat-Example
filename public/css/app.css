@@ -73,6 +73,7 @@ form {
     background: #ffc520;
 }
 
+#chatbox_messages li.system + li.system,
 #chatbox_messages li.user + li.user,
 #chatbox_messages li.consecutive-message {
     margin-top:-16px;
