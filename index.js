@@ -1,10 +1,10 @@
 'use strict';
 
-const app = require('express')();
-const express = require('express');
-const session = require('express-session');
-const http = require('http').Server(app);
-const authentication = require('./server/authentication');
+const express           = require('express');
+const app               = express();
+const session           = require('express-session');
+const http              = require('http').Server(app);
+const authentication    = require('./server/authentication');
 
 const bunyan            = require('bunyan');
 const expressBunyan     = require('express-bunyan-logger');
