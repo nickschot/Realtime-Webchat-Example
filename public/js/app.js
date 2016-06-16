@@ -46,6 +46,16 @@ $().ready(function(){
         } else {
             messageClass = msg.username === username ? 'user' : '';
 
+            if(lastMessageFromUser(msg.username)){
+                if(msg.username === username){
+                    $('#chatbox_messages li:last-child').addClass('previous-message');
+                } else {
+                    messageClass += ' consecutive-message';
+                }
+                
+                messageClass += ' username-hidden';
+            }
+
             messageElem = $('<li class="' + messageClass + '"><span></span><p></p></li>');
             messageElem.children('span').text(msg.username);
             messageElem.children('p').text(msg.message);
@@ -55,13 +65,19 @@ $().ready(function(){
         scrollDown();
     }
 
+    function lastMessageFromUser(username){
+        var lastUsername = $('#chatbox_messages li:last-child').find('span').text();
+        return lastUsername === username;
+    }
+
     function scrollDown(){
         var height = $('html').outerHeight();
         var windowHeight = $(window).height();
 
         var scrollStart = $('html').scrollTop();
         var scrollEnd = height > windowHeight ? height - windowHeight : scrollStart;
-        
+
+        //TODO: don't scroll when a user is scrolled up
         $('body').animate({
             scrollTop: scrollEnd+'px'
         }, 300);

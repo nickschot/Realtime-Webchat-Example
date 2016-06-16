@@ -48,9 +48,8 @@ form {
 
 #chatbox_messages li {
     padding: 20px 15px;
-    margin: 20px;
+    margin: 40px 20% 20px 20px;
     font-size: 18px;
-    margin-right:20%;
     display:block;
     position:relative;
     background: #ffe87c;
@@ -66,16 +65,16 @@ form {
 
 #chatbox_messages li.system {
     background: #EEE;
-    margin-right: 20px;
+    margin: 20px;
 }
 
 #chatbox_messages li.user {
-    margin-left: 20%;
-    margin-right: 20px;
+    margin: 20px 20px 20px 20%;
     background: #ffc520;
 }
 
-#chatbox_messages li.user + li.user {
+#chatbox_messages li.user + li.user,
+#chatbox_messages li.consecutive-message {
     margin-top:-16px;
 }
 
@@ -83,17 +82,29 @@ form {
     display:none;
 }
 
-#chatbox_messages li + li.user:last-child:after {
+#chatbox_messages li.user:not(.previous-message):after,
+#chatbox_messages li:not(.user):not(.system):after {
     position: absolute;
-    bottom: -15px;
-    right: 0;
     content: '';
     height: 0;
     width: 0;
     line-height: 0;
+}
+
+#chatbox_messages li:not(.user):not(.system):not(.consecutive-message):after {
+    top: -15px;
+    left: 0;
+    border-right: 20px solid transparent;
+    border-bottom: 15px solid #ffe87c;
+}
+
+#chatbox_messages li.user:not(.previous-message):after {
+    bottom: -15px;
+    right: 0;
     border-left: 20px solid transparent;
     border-top: 15px solid #ffc520;
 }
 
-
-
+#chatbox_messages li.username-hidden > span {
+    display:none;
+}
