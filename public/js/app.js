@@ -12,14 +12,18 @@ $().ready(function(){
     $('#chatbox_form').on('submit', function(e){
         e.preventDefault();
 
-        var message = {
-            username: username,
-            message: $('#chatbox_message').val()
-        };
+        var messageText = $('#chatbox_message').val();
 
-        socket.emit('chatbox_message', message);
-        appendMessage('user', message);
-        $('#chatbox_message').val('');
+        if(messageText){
+            var message = {
+                username: username,
+                message: messageText
+            };
+
+            socket.emit('chatbox_message', message);
+            appendMessage('user', message);
+            $('#chatbox_message').val('');
+        }
     });
 
     socket.on('chatbox_message', function(msg){

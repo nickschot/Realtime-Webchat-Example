@@ -67,8 +67,10 @@ io.on('connection', function(socket){
     });
 
     socket.on('chatbox_message', function(msg){
-        log.info('New message: ', msg);
-        socket.broadcast.emit('chatbox_message', msg);
+        if(msg.message){
+            log.info('New message: ', msg);
+            socket.broadcast.emit('chatbox_message', msg);
+        }
     });
 });
 
