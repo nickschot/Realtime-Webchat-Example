@@ -52,7 +52,7 @@ $().ready(function(){
                 } else {
                     messageClass += ' consecutive-message';
                 }
-                
+
                 messageClass += ' username-hidden';
             }
 
@@ -61,7 +61,11 @@ $().ready(function(){
             messageElem.children('p').text(msg.message);
         }
 
-        $('#chatbox_messages').append(messageElem);
+        messageElem
+            .css('opacity', 0)
+            .appendTo('#chatbox_messages')
+            .animate({ opacity: 1 }, 300)
+            .css('transform', 'translateY(0)');
         scrollDown();
     }
 

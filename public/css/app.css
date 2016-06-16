@@ -53,6 +53,8 @@ form {
     display:block;
     position:relative;
     background: #ffe87c;
+    transform: translateY(30px);
+    transition: transform 0.3s;
 }
 
 #chatbox_messages li > span {
