@@ -55,9 +55,11 @@ app.use('/public', express.static('public'));
 //Server API
 io.on('connection', function(socket){
     log.info('A user connected');
-    //TODO: don't emit this to the user who connected
-    socket.broadcast.emit('system_message', {
-        message: 'A user connected'
+
+    socket.on('connected', function(msg){
+        socket.broadcast.emit('system_message', {
+            message: msg.username+' connected'
+        });
     });
 
     socket.on('disconnect', function(){

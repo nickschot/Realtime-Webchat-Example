@@ -7,6 +7,9 @@ $().ready(function(){
     var socket = io();
     var username = 'User'+ Math.floor(Math.random() * (99999 - 10000) + 10000);
 
+    socket.emit('connected', {
+        username: username
+    });
     appendMessage('system', {message: 'Welcome to Chatsome '+username});
 
     $('#chatbox_form').on('submit', function(e){
