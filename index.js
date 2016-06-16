@@ -54,18 +54,20 @@ app.use('/public', express.static('public'));
 
 //Server API
 io.on('connection', function(socket){
-    log.info('A user connected');
+    var username = '';
 
     socket.on('connected', function(msg){
+        username = msg.username;
+        log.info(username + ' connected');
         socket.broadcast.emit('system_message', {
             message: msg.username+' connected'
         });
     });
 
     socket.on('disconnect', function(){
-        log.info('A user disconnected');
+        log.info(username + ' disconnected');
         socket.broadcast.emit('system_message', {
-            message: 'A user disconnected'
+            message: username + ' disconnected'
         });
     });
 
