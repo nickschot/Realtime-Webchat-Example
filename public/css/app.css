@@ -27,7 +27,7 @@ form {
 
 #chatbox_form button {
     width: 15%;
-    background: #b5d592;
+    background: #41a5da;
     color: #FFF;
     border: none;
     padding: 20px 0;
@@ -36,7 +36,7 @@ form {
 }
 
 #chatbox_form button:hover {
-    background: #666600;
+    background: #338eb5;
     color: #FFF;
 }
 
