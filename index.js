@@ -3,9 +3,13 @@ const requireDir        = require('require-dir');
 
 const express           = require('express');
 const app               = express();
-const session           = require('express-session');
+const session           = require('express-session')({
+    secret: 'chatsomeIsAwesome!',
+    resave: false,
+    saveUninitialized: false
+});
+const socketsession     = require("express-socket.io-session");
 const http              = require('http').Server(app);
-const authentication    = require('./server/authentication');
 const io                = require('socket.io')(http);
 const messaging         = require('./server/messaging.js');
 
@@ -36,28 +40,16 @@ const log = bunyan.createLogger(bunyanConfig);
 app.use(expressBunyan(expressBunyanConfig));
 app.use(expressBunyan.errorLogger(expressBunyanConfig));
 
-app.use(session({
-    secret: 'chatsomeIsAwesome!',
-    resave: false,
-    saveUninitialized: false
+    // SESSION MIDDLEWARE
+app.use(session);
+io.use(socketsession(session, {
+    autoSave:true
 }));
-
-//app.get('/pages/authenticated/*', authentication.requireAuthentication);
 
 // ENDPOINTS
 
-//Frontend entrypoint
-/*
-app.get('/', function(req, res){
-    res.sendFile(__dirname + '/pages/index.html');
-});
-*/
 //Frontend static files
 app.use('/public', express.static(__dirname + '/public'));
-
-//Authenticated files
-app.get('/authenticated', authentication.is_authenticated);
-app.use('/authenticated', express.static(__dirname + '/pages/authenticated'));
 
 // Fallthrough
 app.use('/', express.static(__dirname + '/pages'));
