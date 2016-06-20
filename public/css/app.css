@@ -4,12 +4,17 @@
     box-sizing: border-box;
 }
 
+html {
+    height: 100%;
+}
+
 body {
     font: 13px Helvetica, Arial;
     padding-bottom: 65px;
+    height: 100%;
 }
 
-form {
+#chatbox_form {
     position: fixed;
     bottom: 0;
     background: #000;
