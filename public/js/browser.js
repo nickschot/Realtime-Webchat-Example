@@ -3,13 +3,17 @@
 $().ready(function() {
     var socket = io();
 
-    socket.emit('get_rooms');
+    function get_rooms() {
+        socket.emit('get_rooms');
+    }
+
+    get_rooms();
 
     socket.on('receive_rooms', function(msg) {
         console.log('Received rooms', msg);
         if(!msg.error) {
             var rooms = msg.data;
-
+            $('#chat-rooms').empty();
             rooms.forEach(function(room_name) {
                 var room = $('<li class="room_name"><div><span></span><button></button></div></li>');
 
@@ -32,7 +36,8 @@ $().ready(function() {
 
         var room_name = $('#new-room-name').val();
         socket.emit('add_room', room_name);
-        enter_room(room_name);
+        //enter_room(room_name);
+        get_rooms();
     });
 
     function enter_room(room_name) {
