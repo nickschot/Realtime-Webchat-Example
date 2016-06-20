@@ -7,15 +7,23 @@ $().ready(function() {
 
     socket.on('receive_rooms', function(msg) {
         console.log('Received rooms', msg);
-        var rooms = msg.rooms;
+        if(!msg.error) {
+            var rooms = msg.data;
 
-        rooms.forEach(function(room_name) {
-            var room = $('<li class="room_name"><span></span></li>');
-            console.log(room, room_name);
-            room.find('span').text(room_name);
+            rooms.forEach(function(room_name) {
+                var room = $('<li class="room_name"><div><span></span><button></button></div></li>');
 
-            room.appendTo('#chat-rooms');
-        });
+                room.find('span').text(room_name);
+                room.find('button').text('Enter Room').on('click', function() {
+                    enter_room(room_name);
+                });
+
+
+                room.appendTo('#chat-rooms');
+            });
+        } else {
+            window.alert(msg.error);
+        }
     });
 
 
@@ -24,7 +32,11 @@ $().ready(function() {
 
         var room_name = $('#new-room-name').val();
         socket.emit('add_room', room_name);
-
-        window.location = 'http://' + window.location.host + '/authenticated/chatroom.html?room=' + room_name;
+        enter_room(room_name);
     });
+
+    function enter_room(room_name) {
+        socket.emit('join_room', room_name);
+        window.location = 'http://' + window.location.host + '/chatroom.html';
+    }
 });

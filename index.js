@@ -5,8 +5,8 @@ const express           = require('express');
 const app               = express();
 const session           = require('express-session')({
     secret: 'chatsomeIsAwesome!',
-    resave: false,
-    saveUninitialized: false
+    resave: true,
+    saveUninitialized: true
 });
 const socketsession     = require("express-socket.io-session");
 const http              = require('http').Server(app);

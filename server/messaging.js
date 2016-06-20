@@ -7,8 +7,47 @@ module.exports.handle_messaging = function(io, log) {
     var rooms = {'Room 1': []},
         users = [];
 
+    function get_room(room_name) {
+        return rooms[room_name];
+    }
+
+    function join_room(socket, room_name) {
+        var username = get_username(socket);
+        socket.join(room_name);
+
+        // Add user to room if room exists
+        if(rooms[room_name] !== undefined) {
+            rooms[room_name].push(username);
+        }
+    }
+
+    function add_room(room_name) {
+        // Create room
+        if(rooms[room_name] === undefined) {
+            rooms[room_name] = [];
+        }
+    }
+
+    function remove_room(room_name) {
+        delete rooms[room_name];
+    }
+
+    function leave_room(socket, room_name) {
+        var username = get_username(socket),
+            room = get_room(room_name);
+
+        socket.leave(room_name);
+
+        // Remove user from room
+        var room_index = room.indexOf(username);
+        if(room_index > 0) {
+            room.splice(room_index, 1);
+        }
+    }
+
     function is_logged_in(socket) {
-        return !(!socket.handshake.session.username);
+        console.log(users, get_username(socket));
+        return get_username(socket) && _.contains(users, get_username(socket));
     }
 
     function username_exists(username) {
@@ -18,16 +57,34 @@ module.exports.handle_messaging = function(io, log) {
     function log_in(socket, username) {
         users.push(username);
 
-        socket.handshake.session.username = username;
+        set_username(socket, username);
         socket.handshake.session.save();
+
+        console.log('User logged in as ', username);
     }
 
     function log_out(socket) {
-        var username = socket.handshake.session.username;
+        var username = get_username(socket);
         users.splice(users.indexOf(username), 1);
 
-        delete socket.handshake.session.username;
+        remove_username(socket);
         socket.handshake.session.save();
+    }
+
+    function get_username(socket) {
+        return socket.handshake.session.username;
+    }
+
+    function set_username(socket, username) {
+        socket.handshake.session.username = username;
+    }
+
+    function remove_username(socket) {
+        delete socket.handshake.session.username;
+    }
+
+    function send_response(socket, channel, data, error) {
+        socket.emit(channel, {data: data, error: error});
     }
 
     io.on('connection', function(socket){
@@ -44,10 +101,11 @@ module.exports.handle_messaging = function(io, log) {
                 response = 'User in use!';
             }
 
-            socket.emit('logged-in', response);
+            send_response(socket, 'logged-in', response, false);
         });
 
-        socket.on('disconnect', function() {
+        socket.on('log-out', function() {
+            console.log('log-out');
             log_out(socket);
         });
 
@@ -70,47 +128,38 @@ module.exports.handle_messaging = function(io, log) {
 
         socket.on('get_rooms', function() {
             var room_names = Object.keys(rooms);
-
-            log.info('Retrieving rooms...');
-            socket.emit('receive_rooms', {rooms: room_names});
-            log.info('Rooms: ' + room_names);
+            console.log('get_rooms ', socket.handshake.session);
+            if(is_logged_in(socket)) {
+                send_response(socket, 'receive_rooms', room_names, false);
+            } else {
+                send_response(socket, 'receive_rooms', undefined, 'User is not logged in! Cannot retrieve rooms!');
+            }
         });
 
         socket.on('join_room', function(msg) {
             var room_name = msg;
-            socket.join(room_name);
-
-            // Add user to room
-            if(rooms[room_name] !== undefined) {
-                rooms[room_name].push(socket.id);
-            }
+            join_room(socket, room_name);
         });
 
         socket.on('add_room', function(msg) {
             var room_name = msg;
-
-            // Create room
-            if(rooms[room_name] === undefined) {
-                rooms[room_name] = [socket.id];
-            }
+            add_room(room_name);
         });
 
         socket.on('leave_room', function(msg) {
             var room_name = msg,
-                room = rooms[room_name];
+                room = get_room(room_name);
 
-            socket.leave(room_name);
-
-            // Remove user from room
-            var room_index = room.indexOf(socket.id);
-            if(room_index > 0) {
-                room.splice(room_index, 1);
-            }
-
+            leave_room(socket, room_name);
             // Remove room if empty
             if(room.length === 0) {
-                delete rooms[room_name];
+                remove_room(room_name);
             }
+        });
+
+        socket.on('remove_room', function(msg) {
+            var room_name = msg;
+            remove_room(room_name);
         });
 
         socket.on('chatbox_message', function(msg){
