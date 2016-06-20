@@ -11,6 +11,22 @@ module.exports.handle_messaging = function(io, log) {
         return rooms[room_name];
     }
 
+    function user_in_rooms(username) {
+        var result = [];
+
+        for(var room_name in rooms) {
+            if(rooms.hasOwnProperty(room_name)) {
+                var users_in_room = rooms[room_name];
+
+                if(_.contains(users_in_room, username)) {
+                    result.push(room_name);
+                }
+            }
+        }
+
+        return result
+    }
+
     function join_room(socket, room_name) {
         var username = get_username(socket);
         socket.join(room_name);
@@ -87,6 +103,15 @@ module.exports.handle_messaging = function(io, log) {
         socket.emit(channel, {data: data, error: error});
     }
 
+    function broadcast_message_to_user_rooms(socket, channel, msg) {
+        var in_rooms = user_in_rooms(get_username(socket));
+
+        log.info('New message: ', msg);
+        in_rooms.forEach(function(room_name) {
+            io.to(room_name).emit(channel, msg);
+        });
+    }
+
     io.on('connection', function(socket){
         var username = '';
 
@@ -109,23 +134,6 @@ module.exports.handle_messaging = function(io, log) {
             log_out(socket);
         });
 
-        socket.on('user_connected', function(msg){
-            // TODO only in room
-            var username = msg.username;
-            log.info(username + ' connected');
-            socket.broadcast.emit('system_message', {
-                message: msg.username + ' connected'
-            });
-        });
-
-        socket.on('user_disconnect', function(){
-            // TODO only in room
-            log.info(username + ' disconnected');
-            socket.broadcast.emit('system_message', {
-                message: username + ' disconnected'
-            });
-        });
-
         socket.on('get_rooms', function() {
             var room_names = Object.keys(rooms);
             console.log('get_rooms ', socket.handshake.session);
@@ -137,8 +145,13 @@ module.exports.handle_messaging = function(io, log) {
         });
 
         socket.on('join_room', function(msg) {
-            var room_name = msg;
+            var room_name = msg,
+                username = get_username(socket);
+
             join_room(socket, room_name);
+
+            log.info(username + ' entered room ' + room_name);
+            broadcast_message_to_user_rooms(socket, 'system_message', {message: msg.username + ' connected'});
         });
 
         socket.on('add_room', function(msg) {
@@ -148,13 +161,21 @@ module.exports.handle_messaging = function(io, log) {
 
         socket.on('leave_room', function(msg) {
             var room_name = msg,
-                room = get_room(room_name);
+                room = get_room(room_name),
+                username = get_username(socket);
 
             leave_room(socket, room_name);
+
             // Remove room if empty
             if(room.length === 0) {
                 remove_room(room_name);
+                log.info('Room ' + room_name + ' is empty and is removed');
             }
+
+            log.info(username + ' disconnected');
+            broadcast_message_to_user_rooms(socket, 'system_message', {
+                message: username + ' disconnected'
+            });
         });
 
         socket.on('remove_room', function(msg) {
@@ -163,10 +184,8 @@ module.exports.handle_messaging = function(io, log) {
         });
 
         socket.on('chatbox_message', function(msg){
-            // TODO only in room
-            if(msg.message){
-                log.info('New message: ', msg);
-                socket.broadcast.emit('chatbox_message', msg);
+            if(msg.message) {
+                broadcast_message_to_user_rooms(socket, 'chatbox_message', msg);
             }
         });
     });
