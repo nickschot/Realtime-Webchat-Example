@@ -47,14 +47,20 @@ app.use(session({
 // ENDPOINTS
 
 //Frontend entrypoint
+/*
 app.get('/', function(req, res){
     res.sendFile(__dirname + '/pages/index.html');
 });
-
+*/
 //Frontend static files
-app.use('/pages', express.static('pages'));
-app.use('/public', express.static('public'));
+app.use('/public', express.static(__dirname + '/public'));
 
+//Authenticated files
+app.get('/authenticated', authentication.is_authenticated);
+app.use('/authenticated', express.static(__dirname + '/pages/authenticated'));
+
+// Fallthrough
+app.use('/', express.static(__dirname + '/pages'));
 
 
 //Start the HTTP server on port 3000
