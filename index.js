@@ -7,7 +7,7 @@ const session           = require('express-session');
 const http              = require('http').Server(app);
 //const authentication    = require('./server/authentication');
 const io                = require('socket.io')(http);
-const messaging         = require('./server/chat.js');
+const messaging         = require('./server/messaging.js');
 
 const bunyan            = require('bunyan');
 const expressBunyan     = require('express-bunyan-logger');
