@@ -5,7 +5,7 @@ const express           = require('express');
 const app               = express();
 const session           = require('express-session');
 const http              = require('http').Server(app);
-//const authentication    = require('./server/authentication');
+const authentication    = require('./server/authentication');
 const io                = require('socket.io')(http);
 const messaging         = require('./server/messaging.js');
 
