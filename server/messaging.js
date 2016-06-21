@@ -174,17 +174,11 @@ module.exports.handle_messaging = function(io, log) {
         });
 
         socket.on('leave_room', function(msg) {
-            console.log('Leaving room: ', msg);
-            var room_name = msg,
-                room = get_room(room_name);
+            var room_name = msg;
+
+            broadcast_message_to_user_rooms(socket, 'system', {message: 'User ' + get_username(socket) + ' is leaving!'});
 
             leave_room(socket, room_name);
-
-            // Remove room if empty
-            if(room.length === 0) {
-                remove_room(room_name);
-                log.info('Room ' + room_name + ' is empty and is removed');
-            }
         });
 
         socket.on('remove_room', function(msg) {

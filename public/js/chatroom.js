@@ -74,10 +74,9 @@ $().ready(function(){
             var rooms = msg.data;
             $('#chat-rooms').empty();
             rooms.forEach(function(room_name) {
-                var room = $('<li class="room_name"><div><span></span><button></button></div></li>');
+                var room = $('<li class="room_name"><a>' + room_name + '</a></li>');
 
-                room.find('span').text(room_name);
-                room.find('button').text('Enter Room').on('click', function() {
+                room.on('click', function() {
                     enter_room(room_name);
                     current_room_name = room_name;
                 });
@@ -130,14 +129,14 @@ $().ready(function(){
     }
 
     function scrollDown(){
-        var height = $('html').outerHeight();
-        var windowHeight = $(window).height();
+        var height = $('.chatbox_messages_wrapper ul').outerHeight();
+        var wrapperHeight = $('.chatbox_messages_wrapper').height();
 
-        var scrollStart = $('html').scrollTop();
-        var scrollEnd = height > windowHeight ? height - windowHeight : scrollStart;
+        var scrollStart = $('.chatbox_messages_wrapper ul').scrollTop();
+        var scrollEnd = height > wrapperHeight ? height - wrapperHeight : scrollStart;
 
         //TODO: don't scroll when a user is scrolled up
-        $('body').animate({
+        $('.chatbox_messages_wrapper').animate({
             scrollTop: scrollEnd+'px'
         }, 300);
     }

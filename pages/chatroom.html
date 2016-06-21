@@ -16,17 +16,18 @@
     <div class="column room-column">
         <span>
             Current room: <span id="current-room"></span>
-
         </span>
-        <ul id="chat-rooms"></ul>
 
         <form id="new-room">
             <input id="new-room-name" placeholder="New room..."/>
-            <button>Create new Room</button>
+            <button title="Create new room">+</button>
         </form>
+        <ul id="chat-rooms"></ul>
     </div>
     <div class="column chat-column">
-        <ul id="chatbox_messages"></ul>
+        <div class="chatbox_messages_wrapper">
+            <ul id="chatbox_messages"></ul>
+        </div>
         <form id="chatbox_form" action="">
             <input id="chatbox_message" placeholder="Message..." autocomplete="off" /><button>Send</button>
         </form>
