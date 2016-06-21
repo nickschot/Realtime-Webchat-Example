@@ -107,7 +107,10 @@ module.exports.handle_messaging = function(io, log) {
         var in_rooms = user_in_rooms(get_username(socket));
 
         log.info('New message: ', msg);
+        console.log(in_rooms);
         in_rooms.forEach(function(room_name) {
+            console.log('io.to(' + room_name + ').emit(' + channel + ', ' + msg + ')');
+            console.log(io.to(room_name));
             io.to(room_name).emit(channel, msg);
         });
     }
@@ -151,7 +154,7 @@ module.exports.handle_messaging = function(io, log) {
             join_room(socket, room_name);
 
             log.info(username + ' entered room ' + room_name);
-            broadcast_message_to_user_rooms(socket, 'system_message', {message: msg.username + ' connected'});
+            broadcast_message_to_user_rooms(socket, 'system_message', {message: username + ' connected'});
         });
 
         socket.on('add_room', function(msg) {

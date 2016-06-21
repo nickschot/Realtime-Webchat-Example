@@ -1,14 +1,29 @@
 'use strict';
 
+/** COPIED FROM http://www.technicaloverload.com/get-value-url-parameters-using-javascript/ */
+function getParameter(theParameter) {
+  var params = window.location.search.substr(1).split('&');
+
+  for (var i = 0; i < params.length; i++) {
+    var p=params[i].split('=');
+	if (p[0] == theParameter) {
+	  return decodeURIComponent(p[1]);
+	}
+  }
+  return false;
+}
 
 $().ready(function(){
     var socket = io();
-    var username = 'User'+ Math.floor(Math.random() * (99999 - 10000) + 10000);
+    var username = 'User'+ Math.floor(Math.random() * (99999 - 10000) + 10000),
+        room_name = getParameter('room-name');
 
     socket.emit('user_connected', {
         username: username
     });
     appendMessage('system', {message: 'Welcome to Chatsome '+username});
+
+    socket.emit('join_room', room_name);
 
     $('#chatbox_form').on('submit', function(e){
         e.preventDefault();

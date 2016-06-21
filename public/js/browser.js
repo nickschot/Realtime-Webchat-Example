@@ -42,6 +42,6 @@ $().ready(function() {
 
     function enter_room(room_name) {
         socket.emit('join_room', room_name);
-        window.location = 'http://' + window.location.host + '/chatroom.html';
+        window.location = 'http://' + window.location.host + '/chatroom.html?room-name=' + room_name;
     }
 });
