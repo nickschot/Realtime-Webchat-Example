@@ -9,7 +9,7 @@ $().ready(function() {
 
         socket.on('logged-in', function(msg) {
             if(msg.data === 'succeeded') {
-                window.location = 'http://' + window.location.host + '/browser.html';
+                window.location = 'http://' + window.location.host + '/chatroom.html';
             } else {
                 window.alert(msg.data);
             }

@@ -14,7 +14,6 @@ $().ready(function() {
     get_rooms();
 
     socket.on('receive_rooms', function(msg) {
-        console.log('Received rooms', msg);
         if(!msg.error) {
             var rooms = msg.data;
             $('#chat-rooms').empty();

@@ -1,27 +1,30 @@
 'use strict';
 
-/** COPIED FROM http://www.technicaloverload.com/get-value-url-parameters-using-javascript/ */
-function getParameter(theParameter) {
-  var params = window.location.search.substr(1).split('&');
-
-  for (var i = 0; i < params.length; i++) {
-    var p=params[i].split('=');
-	if (p[0] == theParameter) {
-	  return decodeURIComponent(p[1]);
-	}
-  }
-  return false;
-}
-
 $().ready(function(){
-    var socket = io();
-    var room_name = getParameter('room-name');
+    var socket = io(),
+        username = false,
+        current_room_name = false;
 
     $(window).on('beforeunload', function() {
         socket.emit('disconnect-from-app');
     });
 
-    socket.emit('join_room', room_name);
+    function get_rooms() {
+        socket.emit('get_rooms');
+    }
+
+    function get_username() {
+        socket.emit('get_username');
+    }
+
+    function enter_room(room_name) {
+        socket.emit('join_room', room_name);
+        $('#chatbox_messages').empty();
+    }
+
+    get_username();
+    get_rooms();
+    appendMessage('system', {message: 'Please click a room on the left'});
 
     $('#chatbox_form').on('submit', function(e){
         e.preventDefault();
@@ -38,12 +41,46 @@ $().ready(function(){
         }
     });
 
+    $('#new-room').on('submit', function(e) {
+        e.preventDefault();
+
+        var room_name = $('#new-room-name').val();
+        socket.emit('add_room', room_name);
+        get_rooms();
+    });
+
+    socket.on('receive_username', function(msg) {
+        username = msg.data;
+    });
+
     socket.on('chatbox_message', function(msg){
-        appendMessage('user', msg);
+        appendMessage('user', msg.data);
+        console.log('chatbox message', msg);
     });
 
     socket.on('system_message', function(msg){
-        appendMessage('system', msg);
+        appendMessage('system', msg.data);
+        console.log('system message', msg);
+    });
+
+    socket.on('receive_rooms', function(msg) {
+        if(!msg.error) {
+            var rooms = msg.data;
+            $('#chat-rooms').empty();
+            rooms.forEach(function(room_name) {
+                var room = $('<li class="room_name"><div><span></span><button></button></div></li>');
+
+                room.find('span').text(room_name);
+                room.find('button').text('Enter Room').on('click', function() {
+                    enter_room(room_name);
+                    current_room_name = room_name;
+                });
+
+                room.appendTo('#chat-rooms');
+            });
+        } else {
+            window.alert(msg.error);
+        }
     });
 
     function appendMessage(type, msg){

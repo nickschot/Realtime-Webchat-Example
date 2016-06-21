@@ -67,7 +67,6 @@ module.exports.handle_messaging = function(io, log) {
     }
 
     function is_logged_in(socket) {
-        console.log(users, get_username(socket));
         return get_username(socket) && _.contains(users, get_username(socket));
     }
 
@@ -80,8 +79,6 @@ module.exports.handle_messaging = function(io, log) {
 
         set_username(socket, username);
         socket.handshake.session.save();
-
-        console.log('User logged in as ', username);
     }
 
     function log_out(socket) {
@@ -104,8 +101,8 @@ module.exports.handle_messaging = function(io, log) {
         delete socket.handshake.session.username;
     }
 
-    function send_response(socket, channel, data, error) {
-        socket.emit(channel, {data: data, error: error});
+    function send_response(nsp, channel, data, error) {
+        nsp.emit(channel, {data: data, error: error});
     }
 
     function broadcast_message_to_user_rooms(socket, channel, msg) {
@@ -113,8 +110,14 @@ module.exports.handle_messaging = function(io, log) {
 
         log.info('New message: ', msg);
         in_rooms.forEach(function(room_name) {
-            io.to(room_name).emit(channel, msg);
+            send_response(io.to(room_name), channel, msg, false);
         });
+    }
+
+    function send_rooms_to(nsp) {
+        var room_names = Object.keys(rooms);
+
+        send_response(nsp, 'receive_rooms', room_names, false);
     }
 
     io.on('connection', function(socket){
@@ -136,11 +139,13 @@ module.exports.handle_messaging = function(io, log) {
             log_out(socket);
         });
 
-        socket.on('get_rooms', function() {
-            var room_names = Object.keys(rooms);
+        socket.on('get_username', function() {
+            send_response(socket, 'receive_username', get_username(socket), false);
+        });
 
+        socket.on('get_rooms', function() {
             if(is_logged_in(socket)) {
-                send_response(socket, 'receive_rooms', room_names, false);
+                send_rooms_to(socket);
             } else {
                 send_response(socket, 'receive_rooms', undefined, 'User is not logged in! Cannot retrieve rooms!');
             }
@@ -160,6 +165,8 @@ module.exports.handle_messaging = function(io, log) {
         socket.on('add_room', function(msg) {
             var room_name = msg;
             add_room(room_name);
+
+            send_rooms_to(io);
         });
 
         socket.on('leave_room', function(msg) {
@@ -191,7 +198,7 @@ module.exports.handle_messaging = function(io, log) {
 
         socket.on('disconnect-from-app', function() {
             var rooms = user_in_rooms(get_username(socket));
-            
+
             log.info('User ' + get_username(socket) + ' has disconnected from app');
             rooms.forEach(function(room) {
                 leave_room(socket, room);

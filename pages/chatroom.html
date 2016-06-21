@@ -13,9 +13,19 @@
     <script type="text/javascript" src="/public/js/chatroom.js"></script>
 </head>
 <body>
-    <ul id="chatbox_messages"></ul>
-    <form id="chatbox_form" action="">
-        <input id="chatbox_message" placeholder="Message..." autocomplete="off" /><button>Send</button>
-    </form>
+    <div class="column room-column">
+        <ul id="chat-rooms"></ul>
+
+        <form id="new-room">
+            <input id="new-room-name" placeholder="New room..."/>
+            <button>Create new Room</button>
+        </form>
+    </div>
+    <div class="column chat-column">
+        <ul id="chatbox_messages"></ul>
+        <form id="chatbox_form" action="">
+            <input id="chatbox_message" placeholder="Message..." autocomplete="off" /><button>Send</button>
+        </form>
+    </div>
 </body>
 </html>
