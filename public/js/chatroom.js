@@ -15,13 +15,11 @@ function getParameter(theParameter) {
 
 $().ready(function(){
     var socket = io();
-    var username = 'User'+ Math.floor(Math.random() * (99999 - 10000) + 10000),
-        room_name = getParameter('room-name');
+    var room_name = getParameter('room-name');
 
-    socket.emit('user_connected', {
-        username: username
+    $(window).on('beforeunload', function() {
+        socket.emit('disconnect-from-app');
     });
-    appendMessage('system', {message: 'Welcome to Chatsome '+username});
 
     socket.emit('join_room', room_name);
 
@@ -32,12 +30,10 @@ $().ready(function(){
 
         if(messageText){
             var message = {
-                username: username,
                 message: messageText
             };
 
             socket.emit('chatbox_message', message);
-            appendMessage('user', message);
             $('#chatbox_message').val('');
         }
     });

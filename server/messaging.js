@@ -59,6 +59,11 @@ module.exports.handle_messaging = function(io, log) {
         if(room_index > 0) {
             room.splice(room_index, 1);
         }
+
+        log.info(username + ' disconnected');
+        broadcast_message_to_user_rooms(socket, 'system_message', {
+            message: username + ' disconnected'
+        });
     }
 
     function is_logged_in(socket) {
@@ -107,17 +112,12 @@ module.exports.handle_messaging = function(io, log) {
         var in_rooms = user_in_rooms(get_username(socket));
 
         log.info('New message: ', msg);
-        console.log(in_rooms);
         in_rooms.forEach(function(room_name) {
-            console.log('io.to(' + room_name + ').emit(' + channel + ', ' + msg + ')');
-            console.log(io.to(room_name));
             io.to(room_name).emit(channel, msg);
         });
     }
 
     io.on('connection', function(socket){
-        var username = '';
-
         socket.on('log-in', function(msg) {
             var username = msg,
                 response;
@@ -133,13 +133,12 @@ module.exports.handle_messaging = function(io, log) {
         });
 
         socket.on('log-out', function() {
-            console.log('log-out');
             log_out(socket);
         });
 
         socket.on('get_rooms', function() {
             var room_names = Object.keys(rooms);
-            console.log('get_rooms ', socket.handshake.session);
+
             if(is_logged_in(socket)) {
                 send_response(socket, 'receive_rooms', room_names, false);
             } else {
@@ -155,6 +154,7 @@ module.exports.handle_messaging = function(io, log) {
 
             log.info(username + ' entered room ' + room_name);
             broadcast_message_to_user_rooms(socket, 'system_message', {message: username + ' connected'});
+            send_response(socket, 'system', {message: 'Welcome to Chatsome ' + username}, false);
         });
 
         socket.on('add_room', function(msg) {
@@ -164,8 +164,7 @@ module.exports.handle_messaging = function(io, log) {
 
         socket.on('leave_room', function(msg) {
             var room_name = msg,
-                room = get_room(room_name),
-                username = get_username(socket);
+                room = get_room(room_name);
 
             leave_room(socket, room_name);
 
@@ -174,11 +173,6 @@ module.exports.handle_messaging = function(io, log) {
                 remove_room(room_name);
                 log.info('Room ' + room_name + ' is empty and is removed');
             }
-
-            log.info(username + ' disconnected');
-            broadcast_message_to_user_rooms(socket, 'system_message', {
-                message: username + ' disconnected'
-            });
         });
 
         socket.on('remove_room', function(msg) {
@@ -187,9 +181,23 @@ module.exports.handle_messaging = function(io, log) {
         });
 
         socket.on('chatbox_message', function(msg){
+            var username = get_username(socket);
+
             if(msg.message) {
+                msg.username = username;
                 broadcast_message_to_user_rooms(socket, 'chatbox_message', msg);
             }
+        });
+
+        socket.on('disconnect-from-app', function() {
+            var rooms = user_in_rooms(get_username(socket));
+            
+            log.info('User ' + get_username(socket) + ' has disconnected from app');
+            rooms.forEach(function(room) {
+                leave_room(socket, room);
+            });
+
+            log_out(socket);
         });
     });
 };

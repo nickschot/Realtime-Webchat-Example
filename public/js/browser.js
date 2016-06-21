@@ -7,6 +7,10 @@ $().ready(function() {
         socket.emit('get_rooms');
     }
 
+    $(window).on('beforeunload', function() {
+        socket.emit('disconnect-from-app');
+    });
+
     get_rooms();
 
     socket.on('receive_rooms', function(msg) {
