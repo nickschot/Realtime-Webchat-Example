@@ -18,8 +18,14 @@ $().ready(function(){
     }
 
     function enter_room(room_name) {
+        if(current_room_name) {
+            console.log('Leaving room ', current_room_name);
+            socket.emit('leave_room', current_room_name);
+        }
         socket.emit('join_room', room_name);
         $('#chatbox_messages').empty();
+
+        $('#current-room').text(room_name);
     }
 
     get_username();
