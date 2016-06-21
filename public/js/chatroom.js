@@ -45,6 +45,7 @@ $().ready(function(){
         e.preventDefault();
 
         var room_name = $('#new-room-name').val();
+        $('#new-room-name').val('');
         socket.emit('add_room', room_name);
         get_rooms();
     });
