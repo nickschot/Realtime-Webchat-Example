@@ -52,7 +52,11 @@ module.exports.handle_messaging = function(io, log) {
         var username = get_username(socket),
             room = get_room(room_name);
 
-        socket.leave(room_name);
+        socket.leave(room_name, function(err) {
+            if(err) {
+                log.error('Could not leave room: ', err);
+            }
+        });
 
         // Remove user from room
         var room_index = room.indexOf(username);
@@ -159,7 +163,7 @@ module.exports.handle_messaging = function(io, log) {
 
             log.info(username + ' entered room ' + room_name);
             broadcast_message_to_user_rooms(socket, 'system_message', {message: username + ' connected'});
-            send_response(socket, 'system', {message: 'Welcome to Chatsome ' + username}, false);
+            send_response(socket, 'system', {message: 'Joined room ' + room_name}, false);
         });
 
         socket.on('add_room', function(msg) {
@@ -170,6 +174,7 @@ module.exports.handle_messaging = function(io, log) {
         });
 
         socket.on('leave_room', function(msg) {
+            console.log('Leaving room: ', msg);
             var room_name = msg,
                 room = get_room(room_name);
 
