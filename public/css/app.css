@@ -59,6 +59,8 @@ body {
 
 .column {
     float: left;
+    height: 100vh;
+    overflow:hidden;
 }
 
 .room-column {
@@ -67,10 +69,17 @@ body {
 
 .chat-column {
     width: 75%;
+    position:relative;
+}
+
+.chatbox_messages_wrapper {
+    height: calc(100vh - 65px);
+    overflow:auto;
+    background:#FFF;
 }
 
 #chatbox_form {
-    position: fixed;
+    position: absolute;
     bottom: 0;
     background: #000;
     padding: 0;
