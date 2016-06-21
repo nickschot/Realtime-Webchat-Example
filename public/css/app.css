@@ -101,7 +101,7 @@ body {
 #chatbox_messages {
     list-style-type: none;
     margin: 0;
-    padding: 0;
+    padding: 1px 0;
 }
 
 #chatbox_messages li {
