@@ -1,38 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Chatsome</title>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Chatsome</title>
 
-    <link type="text/css" rel="stylesheet" href="public/css/app.css">
+        <link type="text/css" rel="stylesheet" href="public/css/app.css">
 
-    <script src="https://code.jquery.com/jquery-3.0.0.min.js"></script>
-    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
-    <script type="text/javascript" src="/public/js/login.js"></script>
-</head>
-<body>
-    <table style="width: 100%; height: 100%;">
-        <tr>
-        <td style="margin: auto; text-align: center; vertical-align: middle;">
-            <h1>Chatsome!</h1>
+        <script src="https://code.jquery.com/jquery-3.0.0.min.js"></script>
+        <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+        <script type="text/javascript" src="/public/js/login.js"></script>
+    </head>
+    <body>
+        <div class="login-box">
             <form id="login-form" action="">
-                <table style="margin: auto;">
-                    <tr>
-                        <td>
-                            <input id="username" placeholder="Username..." autocomplete="off" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <button>Login</button>
-                        </td>
-                    </tr>
-                </table>
+                <h1>Chatsome!</h1>
+                <input id="username" placeholder="Username..." autocomplete="off" />
+                <button>Login</button>
             </form>
-        </td>
-        </tr>
-    </table>
-</body>
+        </div>
+    </body>
 </html>
