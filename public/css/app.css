@@ -30,7 +30,7 @@ body {
     color: #333;
 }
 
-.login-box input {
+.login-box input, #new-room input {
     display:block;
     border: 2px solid #AAA;
     padding: 15px 10px;
@@ -39,7 +39,7 @@ body {
     margin-bottom: 15px;
 }
 
-.login-box button, #chatbox_form button {
+.login-box button, #chatbox_form button, #new-room button {
     background: #41a5da;
     color: #FFF;
     border: none;
@@ -48,9 +48,10 @@ body {
     cursor:pointer;
 }
 
-.login-box button:hover, #chatbox_form button:hover {
+.login-box button:hover, #chatbox_form button:hover, #new-room button:hover {
     background: #338eb5;
     color: #FFF;
+    cursor:pointer;
 }
 
 .login-box button {
@@ -70,6 +71,45 @@ body {
 .chat-column {
     width: 75%;
     position:relative;
+}
+
+#new-room {
+    border-bottom: 1px solid #888;
+    margin-bottom:15px;
+    height:55px;
+}
+
+#new-room input {
+    margin:0;
+    padding: 15px 10px;
+    font-size: 18px;
+    width:80%;
+    float:left;
+}
+
+#new-room button {
+    margin:0;
+    padding: 0;
+    font-size:30px;
+    float:left;
+    width:20%;
+    height:55px;
+    line-height:55px;
+}
+
+#chat-rooms li a {
+    display:block;
+    padding: 15px;
+    font-size: 18px;
+}
+
+#chat-rooms li a:hover {
+    background: #DDD;
+    cursor:pointer;
+}
+
+#chat-rooms li.active a {
+    background: #ffc520;
 }
 
 .chatbox_messages_wrapper {
