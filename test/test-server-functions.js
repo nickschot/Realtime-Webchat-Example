@@ -38,7 +38,9 @@ function _getSocketMock(){
             } else {
                 return true;
             }
-        }
+        },
+
+        emit: function() {}
     };
 }
 
@@ -106,6 +108,12 @@ describe('Room CLASS', function(){
     let socketMock = _getSocketMock();
     let username = 'Mocha Chai';
 
+    it('Simple init for name', function(done) {
+        room.get_name().should.be.eql('testRoom');
+
+        done();
+    });
+
     it('Should add the USER to the ROOM', function(done){
         room.add_to_room(username, socketMock);
 
@@ -154,11 +162,59 @@ describe('Room CLASS', function(){
 });
 
 describe('RoomManager CLASS', function(){
-    let io = {};
+    let io = {to: function(){return _getSocketMock();}};
     let roomManager = new RoomManager(logger, io);
-    
-    it('SHOULD TEST ALL THE THINGS', function(done){
-        
+    let user_sock1 = _getSocketMock();
+
+    UserManager.set_username(user_sock1, 'user 2');
+
+    it('Add rooms', function(done){
+        roomManager.get_all_rooms().length.should.be.equal(0);
+
+        roomManager.add_room('Room 1');
+        roomManager.get_all_rooms()[0].should.be.equal('Room 1');
+
+        roomManager.add_room('Room 2');
+        roomManager.get_all_rooms()[1].should.be.equal('Room 2');
+
+        roomManager.get_all_rooms().length.should.be.equal(2);
+
+        done();
+    });
+
+    it('Room exists', function(done) {
+        roomManager.room_exists('Room 3').should.be.equal(false);
+        roomManager.room_exists('Room 2').should.be.equal(true);
+
+        done();
+    });
+
+    it('Remove room', function(done) {
+        roomManager.remove_room('Room 1');
+
+        roomManager.get_all_rooms()[0].should.be.equal('Room 2');
+        roomManager.get_all_rooms().length.should.be.equal(1);
+
+        done();
+    });
+
+    it('User with rooms', function(done) {
+        // Room 2 still exists
+        roomManager.room_exists('Room 2').should.be.equal(true);
+        roomManager.join_room(user_sock1, 'Room 2');
+
+        roomManager.get_rooms_of_user(user_sock1).should.be.eql(['Room 2']);
+
+        roomManager.leave_all_rooms(user_sock1);
+
+        roomManager.get_rooms_of_user(user_sock1).should.be.eql([]);
+
+        done();
+    });
+
+    it('Broadcast to all rooms', function(done) {
+
+
         done();
     });
 });

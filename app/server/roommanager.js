@@ -50,8 +50,8 @@ class RoomManager {
         var rooms = this.get_rooms_of_user(socket),
             self = this;
 
-        rooms.forEach(function(room) {
-            self.leave_room(socket, room);
+        rooms.forEach(function(room_name) {
+            self.leave_room(socket, room_name);
         });
     }
 

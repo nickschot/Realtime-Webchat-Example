@@ -9,6 +9,10 @@ class Room {
         this.logger = log;
     }
 
+    get_name() {
+        return this.name;
+    }
+
     is_user_in_room(username) {
         return _.contains(this.get_users_in_room(), username);
     }
@@ -23,7 +27,6 @@ class Room {
 
     add_to_room(username, socket) {
         this.users[username] = socket;
-
         socket.join(this.name);
     }
 
