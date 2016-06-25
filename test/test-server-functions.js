@@ -108,7 +108,7 @@ describe('Room CLASS', function(){
     let socketMock = _getSocketMock();
     let username = 'Mocha Chai';
 
-    it('Simple init for name', function(done) {
+    it('Should return the ROOM name', function(done) {
         room.get_name().should.be.eql('testRoom');
 
         done();
@@ -168,7 +168,7 @@ describe('RoomManager CLASS', function(){
 
     UserManager.set_username(user_sock1, 'user 2');
 
-    it('Add rooms', function(done){
+    it('Should add ROOMS', function(done){
         roomManager.get_all_rooms().length.should.be.equal(0);
 
         roomManager.add_room('Room 1');
@@ -183,14 +183,14 @@ describe('RoomManager CLASS', function(){
         done();
     });
 
-    it('Room exists', function(done) {
+    it('Should check if the ROOM exists', function(done) {
         roomManager.room_exists('Room 3').should.be.equal(false);
         roomManager.room_exists('Room 2').should.be.equal(true);
 
         done();
     });
 
-    it('Remove room', function(done) {
+    it('Should remove the ROOM', function(done) {
         roomManager.remove_room('Room 1');
 
         roomManager.get_all_rooms()[0].should.be.equal('Room 2');
@@ -199,7 +199,7 @@ describe('RoomManager CLASS', function(){
         done();
     });
 
-    it('User with rooms', function(done) {
+    it('Should return the correct ROOMS of the USER', function(done) {
         // Room 2 still exists
         roomManager.room_exists('Room 2').should.be.equal(true);
         roomManager.join_room(user_sock1, 'Room 2');
