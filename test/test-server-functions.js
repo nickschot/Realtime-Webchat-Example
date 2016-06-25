@@ -4,12 +4,10 @@ const chai = require('chai');
 const should = chai.should();
 
 const UserManager = require('../app/server/usermanager').UserManager;
+const RoomManager = require('../app/server/roommanager').RoomManager;
 const Room = require('../app/server/room').Room;
 
 let logger = _getLoggerMock();
-let um = new UserManager();
-let room = new Room('testRoom', logger);
-let errRoom = new Room('errorRoom', logger);
 
 function _getSocketMock(){
     return {
@@ -52,6 +50,7 @@ function _getLoggerMock(){
 }
 
 describe('UserManager CLASS', function() {
+    let um = new UserManager();
     let socketMock = _getSocketMock();
     let username = 'Mocha Chai';
 
@@ -102,6 +101,8 @@ describe('UserManager CLASS', function() {
 });
 
 describe('Room CLASS', function(){
+    let room = new Room('testRoom', logger);
+    let errRoom = new Room('errorRoom', logger);
     let socketMock = _getSocketMock();
     let username = 'Mocha Chai';
 
@@ -148,6 +149,16 @@ describe('Room CLASS', function(){
 
         room.get_users_in_room().should.eql(usernames);
 
+        done();
+    });
+});
+
+describe('RoomManager CLASS', function(){
+    let io = {};
+    let roomManager = new RoomManager(logger, io);
+    
+    it('SHOULD TEST ALL THE THINGS', function(done){
+        
         done();
     });
 });
