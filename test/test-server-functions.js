@@ -6,8 +6,10 @@ const should = chai.should();
 const UserManager = require('../app/server/usermanager').UserManager;
 const Room = require('../app/server/room').Room;
 
+let logger = _getLoggerMock();
 let um = new UserManager();
-let room = new Room();
+let room = new Room('testRoom', logger);
+let errRoom = new Room('errorRoom', logger);
 
 function _getSocketMock(){
     return {
@@ -17,12 +19,35 @@ function _getSocketMock(){
                 username: ''
             }
         },
-        join: function(){
-            return true;
+        join: function(name, callback){
+            if(callback){
+                if(name === 'errorRoom'){
+                    callback('Socket.IO failed to join because username is ERROR');
+                } else {
+                    callback();
+                }
+            } else {
+                return true;
+            }
         },
-        leave: function(){
-            return true;
+        leave: function(name, callback){
+            if(callback){
+                if(name === 'errorRoom'){
+                    callback('Socket.IO failed to leave because username is ERROR');
+                } else {
+                    callback();
+                }
+            } else {
+                return true;
+            }
         }
+    };
+}
+
+function _getLoggerMock(){
+    return {
+        info: function(){},
+        error: function(){}
     };
 }
 
@@ -97,6 +122,10 @@ describe('Room CLASS', function(){
         room.get_users_in_room().should.not.contain(username);
         room.get_socket_of_user(username).should.be.false.and.should.not.eql(socketMock);
 
+        let tmpSocketMock = _getSocketMock();
+        errRoom.add_to_room(username, tmpSocketMock);
+        errRoom.remove_from_room(username);
+
         done();
     });
 
@@ -107,16 +136,16 @@ describe('Room CLASS', function(){
         usernames.forEach((username, index) => { room.add_to_room(username, socketMocks[index]); });
 
         room.get_users_in_room().should.eql(usernames);
-        
+
         room.remove_from_room(usernames[2]);
         delete usernames[2];
-        
+
         room.get_users_in_room().should.eql(usernames);
-        
+
         room.remove_from_room(usernames[1]);
         room.remove_from_room(usernames[0]);
         usernames = [];
-        
+
         room.get_users_in_room().should.eql(usernames);
 
         done();
