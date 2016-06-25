@@ -2,10 +2,11 @@
 
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-const server = require('../index');
 const should = chai.should();
-
 chai.use(chaiHttp);
+
+//Instantiate a server to use
+//const server = require('../index');
 
 /*
 describe('Blobs', function() {
