@@ -10,7 +10,7 @@ const session           = require('express-session')({
 const socketsession     = require('express-socket.io-session');
 const http              = require('http').Server(app);
 const io                = require('socket.io')(http);
-const messaging         = require('./server/messaging.js');
+const messaging         = require('./app/server/messaging.js');
 
 const bunyan            = require('bunyan');
 const expressBunyan     = require('express-bunyan-logger');
@@ -48,10 +48,10 @@ io.use(socketsession(session, {
 // ENDPOINTS
 
 //Frontend static files
-app.use('/public', express.static(__dirname + '/public'));
+app.use('/public', express.static(__dirname + '/app/public'));
 
 // Fallthrough
-app.use('/', express.static(__dirname + '/pages'));
+app.use('/', express.static(__dirname + '/app/pages'));
 
 
 //Start the HTTP server on port 3000
