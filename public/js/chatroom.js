@@ -24,8 +24,6 @@ $().ready(function(){
         }
         socket.emit('join_room', room_name);
         $('#chatbox_messages').empty();
-
-        $('#current-room').text(room_name);
     }
 
     get_username();
@@ -78,8 +76,12 @@ $().ready(function(){
                 var room = $('<li class="room_name"><a>' + room_name + '</a></li>');
 
                 room.on('click', function() {
-                    enter_room(room_name);
-                    current_room_name = room_name;
+                    if(!$(this).hasClass('active')){
+                        enter_room(room_name);
+                        current_room_name = room_name;
+                        $('.room_name').removeClass('active');
+                        room.addClass('active');
+                    }
                 });
 
                 room.appendTo('#chat-rooms');
