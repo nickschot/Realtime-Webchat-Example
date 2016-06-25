@@ -37,10 +37,6 @@ class Room {
         });
 
         delete this.users[username];
-
-        if(false) {
-
-        }
     }
 }
 
