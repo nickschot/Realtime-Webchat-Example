@@ -1,3 +1,4 @@
 .idea/
 node_modules/
 .env
+jshint_results.xml
