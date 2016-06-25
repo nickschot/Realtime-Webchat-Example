@@ -5,6 +5,7 @@
 * Start the server with `npm run dev`
 
 ## Production
+* Install dependencies with `npm install`
 * Start the server with `npm run start`
 
 ## Code style checking
