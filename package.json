@@ -7,8 +7,8 @@
     "start": "node index.js | bunyan -o short",
     "dev": "nf run nodemon index.js | bunyan -o short",
     "test": "istanbul cover _mocha && istanbul report cobertura",
-    "jshint": "jshint . --exclude node_modules,coverage --reporter=checkstyle > jshint_results.xml || true",
-    "plato": "plato -r -d plato -x \"node_modules|coverage|test\" ./"
+    "jshint": "jshint . --exclude node_modules,coverage,plato --reporter=checkstyle > jshint_results.xml || true",
+    "plato": "plato -r -d plato -x \"node_modules|coverage|test|plato\" ./"
   },
   "engines": {
     "node": "4.4.5",
