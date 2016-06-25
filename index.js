@@ -3,10 +3,15 @@ const requireDir        = require('require-dir');
 
 const express           = require('express');
 const app               = express();
-const session           = require('express-session');
+const session           = require('express-session')({
+    secret: 'chatsomeIsAwesome!',
+    resave: true,
+    saveUninitialized: true
+});
+const socketsession     = require("express-socket.io-session");
 const http              = require('http').Server(app);
-//const authentication    = require('./server/authentication');
 const io                = require('socket.io')(http);
+const messaging         = require('./server/messaging.js');
 
 const bunyan            = require('bunyan');
 const expressBunyan     = require('express-bunyan-logger');
@@ -35,52 +40,26 @@ const log = bunyan.createLogger(bunyanConfig);
 app.use(expressBunyan(expressBunyanConfig));
 app.use(expressBunyan.errorLogger(expressBunyanConfig));
 
-app.use(session({
-    secret: 'chatsomeIsAwesome!',
-    resave: false,
-    saveUninitialized: false
+    // SESSION MIDDLEWARE
+app.use(session);
+io.use(socketsession(session, {
+    autoSave:true
 }));
 
-//app.get('/pages/authenticated/*', authentication.requireAuthentication);
-
 // ENDPOINTS
-//Frontend entrypoint
-app.get('/', function(req, res){
-    res.sendFile(__dirname + '/pages/index.html');
-});
+
 //Frontend static files
-app.use('/pages', express.static('pages'));
-app.use('/public', express.static('public'));
+app.use('/public', express.static(__dirname + '/public'));
 
-//Server API
-io.on('connection', function(socket){
-    var username = '';
-
-    socket.on('connected', function(msg){
-        username = msg.username;
-        log.info(username + ' connected');
-        socket.broadcast.emit('system_message', {
-            message: msg.username+' connected'
-        });
-    });
-
-    socket.on('disconnect', function(){
-        log.info(username + ' disconnected');
-        socket.broadcast.emit('system_message', {
-            message: username + ' disconnected'
-        });
-    });
-
-    socket.on('chatbox_message', function(msg){
-        if(msg.message){
-            log.info('New message: ', msg);
-            socket.broadcast.emit('chatbox_message', msg);
-        }
-    });
-});
+// Fallthrough
+app.use('/', express.static(__dirname + '/pages'));
 
 
 //Start the HTTP server on port 3000
 http.listen(process.env.PORT || 3000, function(){
     log.info('listening on *:' + (process.env.PORT || 3000));
 });
+
+//Handle messaging on the broadcast channel
+messaging.handle_messaging(io, log);
+
