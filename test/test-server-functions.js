@@ -4,8 +4,10 @@ const chai = require('chai');
 const should = chai.should();
 
 const UserManager = require('../app/server/usermanager').UserManager;
+const Room = require('../app/server/room').Room;
 
 let um = new UserManager();
+let room = new Room();
 
 function _getSocketMock(){
     return {
@@ -14,13 +16,18 @@ function _getSocketMock(){
                 save: function(){ return true; },
                 username: ''
             }
+        },
+        join: function(){
+            return true;
+        },
+        leave: function(){
+            return true;
         }
     };
 }
 
-let socketMock = _getSocketMock();
-
-describe('UserManager', function() {
+describe('UserManager CLASS', function() {
+    let socketMock = _getSocketMock();
     let username = 'Mocha Chai';
 
     it('Should LOGIN the USER', function(done){
@@ -64,6 +71,53 @@ describe('UserManager', function() {
         um.log_out(socketMocks[0]);
         usernames = [];
         um.get_all_logged_in_users().should.eql(usernames);
+
+        done();
+    });
+});
+
+describe('Room CLASS', function(){
+    let socketMock = _getSocketMock();
+    let username = 'Mocha Chai';
+
+    it('Should add the USER to the ROOM', function(done){
+        room.add_to_room(username, socketMock);
+
+        room.is_user_in_room(username).should.be.true;
+        room.get_users_in_room().should.contain(username);
+        room.get_socket_of_user(username).should.eql(socketMock);
+
+        done();
+    });
+
+    it('Should remove the USER from the ROOM', function(done){
+        room.remove_from_room(username);
+
+        room.is_user_in_room(username).should.be.false;
+        room.get_users_in_room().should.not.contain(username);
+        room.get_socket_of_user(username).should.be.false.and.should.not.eql(socketMock);
+
+        done();
+    });
+
+    it('Should return ALL USERS in the ROOM', function(done){
+        let socketMocks = [_getSocketMock(), _getSocketMock(), _getSocketMock()];
+        let usernames = ['Username 1', 'Username 2', 'Username 3'];
+
+        usernames.forEach((username, index) => { room.add_to_room(username, socketMocks[index]); });
+
+        room.get_users_in_room().should.eql(usernames);
+        
+        room.remove_from_room(usernames[2]);
+        delete usernames[2];
+        
+        room.get_users_in_room().should.eql(usernames);
+        
+        room.remove_from_room(usernames[1]);
+        room.remove_from_room(usernames[0]);
+        usernames = [];
+        
+        room.get_users_in_room().should.eql(usernames);
 
         done();
     });

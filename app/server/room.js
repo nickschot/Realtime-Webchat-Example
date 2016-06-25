@@ -18,7 +18,7 @@ class Room {
     }
 
     get_socket_of_user(username) {
-        return this.users[username];
+        return this.users[username] || false;
     }
 
     add_to_room(username, socket) {
