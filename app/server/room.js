@@ -30,7 +30,7 @@ class Room {
     remove_from_room(username) {
         var socket = this.get_socket_of_user(username);
 
-        socket.leave(this.name, function(err) {
+        socket.leave(this.name, (err) => {
             if(err) {
                 this.logger.error('Could not leave room: ', err);
             }
