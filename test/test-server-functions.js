@@ -177,6 +177,7 @@ describe('RoomManager CLASS', function(){
         roomManager.add_room('Room 2');
         roomManager.get_all_rooms()[1].should.be.equal('Room 2');
 
+        roomManager.add_room('Room 2');
         roomManager.get_all_rooms().length.should.be.equal(2);
 
         done();
@@ -203,17 +204,13 @@ describe('RoomManager CLASS', function(){
         roomManager.room_exists('Room 2').should.be.equal(true);
         roomManager.join_room(user_sock1, 'Room 2');
 
+        roomManager.join_room(user_sock1, 'Room 3');
+
         roomManager.get_rooms_of_user(user_sock1).should.be.eql(['Room 2']);
 
         roomManager.leave_all_rooms(user_sock1);
 
         roomManager.get_rooms_of_user(user_sock1).should.be.eql([]);
-
-        done();
-    });
-
-    it('Broadcast to all rooms', function(done) {
-
 
         done();
     });
