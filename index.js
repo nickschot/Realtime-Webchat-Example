@@ -62,3 +62,4 @@ http.listen(process.env.PORT || 3000, function(){
 //Handle messaging on the broadcast channel
 messaging.handle_messaging(io, log);
 
+module.exports = app;
