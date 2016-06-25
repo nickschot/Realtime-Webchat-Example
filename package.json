@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js | bunyan -o short",
     "dev": "nf run nodemon index.js | bunyan -o short",
-    "test": "istanbul cover _mocha",
+    "test": "istanbul cover _mocha && istanbul report cobertura",
     "jshint": "jshint *.js --reporter=checkstyle > jshint_results.xml || true"
   },
   "engines": {
