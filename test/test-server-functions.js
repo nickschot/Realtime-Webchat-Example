@@ -1,13 +1,43 @@
 'use strict';
 
-var chai = require('chai');
-var should = chai.should();
+const chai = require('chai');
+const should = chai.should();
 
-describe('Messaging', function() {
-    //TODO: this is just some example code
-    it('should list ALL blobs on /blobs GET');
-    it('should list a SINGLE blob on /blob/<id> GET');
-    it('should add a SINGLE blob on /blobs POST');
-    it('should update a SINGLE blob on /blob/<id> PUT');
-    it('should delete a SINGLE blob on /blob/<id> DELETE');
+const UserManager = require('../app/server/usermanager').UserManager;
+
+let um = new UserManager();
+
+let socketMock = {
+    handshake: {
+        session : {
+            save: function(){ return true; },
+            username: ''
+        }
+    }
+};
+
+describe('UserManager', function() {
+    let username = 'Mocha Chai';
+
+    it('Should LOGIN the USER', function(done){
+        um.log_in(socketMock, username);
+
+        socketMock.handshake.session.username.should.equal(username);
+        um.username_exists(username).should.be.true;
+        um.get_all_logged_in_users().should.contain(username);
+        um.is_logged_in(socketMock).should.be.true;
+
+        done();
+    });
+
+    it('Should LOGOUT the USER', function(done){
+        um.log_out(socketMock);
+
+        socketMock.handshake.session.should.not.contain.keys('username');
+        um.username_exists(username).should.be.false;
+        um.get_all_logged_in_users().should.not.contain(username);
+        um.is_logged_in(socketMock).should.be.false;
+
+        done();
+    });
 });

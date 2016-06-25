@@ -37,7 +37,7 @@ class UserManager {
     }
 
     static get_username(socket) {
-        return socket.handshake.session.username;
+        return socket.handshake.session.username ? socket.handshake.session.username : false;
     }
 
     static set_username(socket, username) {
