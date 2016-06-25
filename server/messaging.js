@@ -52,6 +52,11 @@ module.exports.handle_messaging = function(io, log) {
         var username = get_username(socket),
             room = get_room(room_name);
 
+        log.info(username + ' disconnected');
+        broadcast_message_to_user_rooms(socket, 'system_message', {
+            message: username + ' disconnected'
+        });
+
         socket.leave(room_name, function(err) {
             if(err) {
                 log.error('Could not leave room: ', err);
@@ -63,11 +68,6 @@ module.exports.handle_messaging = function(io, log) {
         if(room_index > 0) {
             room.splice(room_index, 1);
         }
-
-        log.info(username + ' disconnected');
-        broadcast_message_to_user_rooms(socket, 'system_message', {
-            message: username + ' disconnected'
-        });
     }
 
     function is_logged_in(socket) {
@@ -175,8 +175,6 @@ module.exports.handle_messaging = function(io, log) {
 
         socket.on('leave_room', function(msg) {
             var room_name = msg;
-
-            broadcast_message_to_user_rooms(socket, 'system', {message: 'User ' + get_username(socket) + ' is leaving!'});
 
             leave_room(socket, room_name);
         });
