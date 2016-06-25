@@ -1,5 +1,4 @@
 'use strict';
-const requireDir        = require('require-dir');
 
 const express           = require('express');
 const app               = express();
@@ -8,7 +7,7 @@ const session           = require('express-session')({
     resave: true,
     saveUninitialized: true
 });
-const socketsession     = require("express-socket.io-session");
+const socketsession     = require('express-socket.io-session');
 const http              = require('http').Server(app);
 const io                = require('socket.io')(http);
 const messaging         = require('./server/messaging.js');
